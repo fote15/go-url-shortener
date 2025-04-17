@@ -16,8 +16,8 @@ This is a backend API for a URL shortener service built in Go, using PostgreSQL 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/fote15/go-url-shortener.git
+cd go-url-shortener
 ```
 
 ### 2. Run with Docker

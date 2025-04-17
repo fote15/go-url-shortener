@@ -1,12 +1,6 @@
+# 🐳 Go URL Shortener with PostgreSQL (Dockerized)
 
-# 🐳 Go App with Postgres (Dockerized)
-
-This project is a Go backend API with:
-
-- PostgreSQL as a database
-- Automatic DB migrations on startup
-- Clean multi-stage Docker build
-- `.env` support for config
+This is a backend API for a URL shortener service built in Go, using PostgreSQL as the database and JWT for authentication. It supports automatic DB migrations and is fully dockerized.
 
 ---
 
@@ -26,30 +20,169 @@ git clone https://github.com/your-username/your-repo.git
 cd your-repo
 ```
 
+### 2. Run with Docker
+
+```bash
+docker-compose up --build
+```
+
 ---
 
 ## 📡 API Endpoints
 
+---
+
 ### 🔐 Auth Routes
 
-| Method | Endpoint         | Description             |
-|--------|------------------|-------------------------|
-| POST   | `/auth/register` | Register a new user     |
-| POST   | `/auth/login`    | Login and get JWT token |
+#### 📌 POST `/auth/register`
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+```
 
-### 🔗 URL Routes (JWT Protected)
+**Success Response:**
+```json
+{
+  "id": 1,
+  "email": "user@example.com"
+}
+```
 
-| Method | Endpoint              | Description                          |
-|--------|-----------------------|--------------------------------------|
-| POST   | `/urls/shorten`       | Create a new shortened URL           |
-| GET    | `/urls/`              | List user's shortened URLs           |
-| GET    | `/urls/{id}`          | Get a specific URL (by ID)           |
-| PUT    | `/urls/{id}`          | Edit an existing shortened URL       |
-| DELETE | `/urls/{id}`          | Delete a shortened URL               |
-| GET    | `/urls/{id}/stats`    | Get visit statistics for a short URL |
+#### 📌 POST `/auth/login`
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+```
 
-### 🚀 Public Routes
+**Success Response:**
+```json
+{
+  "token": "your_jwt_token"
+}
+```
 
-| Method | Endpoint             | Description                         |
-|--------|----------------------|-------------------------------------|
-| GET    | `/url/{shortKey}`    | Redirect to the original long URL   |
+---
+
+### 🔗 URL Routes (Protected with JWT)
+
+All requests require a valid `Authorization: Bearer <token>` header.
+
+#### 📌 POST `/urls/shorten`
+**Request Body:**
+```json
+{
+  "original_url": "https://example.com",
+  "custom_key": "custom123" // optional
+}
+```
+
+**Response:**
+```json
+{
+  "short_url": "/custom123"
+}
+```
+
+#### 📌 GET `/urls/`
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "original_url": "https://example.com",
+    "short_key": "custom123",
+    "visits": 10,
+    "created_at": "2025-04-17T10:00:00Z"
+  },
+  ...
+]
+```
+
+#### 📌 GET `/urls/{id}`
+**Response:**
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "original_url": "https://example.com",
+  "short_key": "custom123",
+  "visits": 10,
+  "created_at": "2025-04-17T10:00:00Z"
+}
+```
+
+#### 📌 PUT `/urls/{id}`
+**Request Body:**
+```json
+{
+  "original_url": "https://updated-example.com",
+  "custom_key": "" // optional
+}
+```
+
+**Response:**
+```json
+{
+  "data": "OK"
+}
+```
+
+#### 📌 DELETE `/urls/{id}`
+**Response:** `200 OK`
+
+#### 📌 GET `/urls/{id}/stats`
+**Response:**
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "original_url": "https://example.com",
+  "short_key": "custom123",
+  "visits": 10,
+  "created_at": "2025-04-17T10:00:00Z"
+}
+```
+
+---
+
+### 🚀 Public Route
+
+#### 📌 GET `/url/{shortKey}`
+**Redirects to the original URL**  
+**Example:** `/url/custom123` → redirects to `https://example.com`
+
+---
+
+## 🔒 Authentication
+
+- Use the `/auth/login` route to receive a JWT token.
+- Send the token in the `Authorization` header for protected routes:
+```
+Authorization: Bearer your_token_here
+```
+
+---
+
+## 📁 Folder Structure
+
+```
+internal/
+├── api/
+│   └── handlers/
+├── repository/
+├── models/
+├── utils/
+```
+
+---
+
+## 📜 License
+
+MIT

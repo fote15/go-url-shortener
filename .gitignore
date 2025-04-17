@@ -19,7 +19,7 @@ vendor/
 .idea/
 *.swp
 *.swo
-
+.env
 # OS-generated files
 .DS_Store
 Thumbs.db

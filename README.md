@@ -168,18 +168,6 @@ All requests require a valid `Authorization: Bearer <token>` header.
 Authorization: Bearer your_token_here
 ```
 
----
-
-## 📁 Folder Structure
-
-```
-internal/
-├── api/
-│   └── handlers/
-├── repository/
-├── models/
-├── utils/
-```
 
 ---
 
